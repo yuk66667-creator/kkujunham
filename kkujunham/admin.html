@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>꾸준함 AI 관리자</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--green:#1D9E75;--gd:#158A62;--gl:#E8F7F2;--dark:#0F1A16;--bg:#F4F7F5;--bd:#E2EAE6;--tx:#1C1917;--mu:#6B7280}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.hd{background:var(--dark);padding:0 22px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.hd-l{font-size:15px;font-weight:700;color:#fff;display:flex;align-items:center;gap:9px}
+.hd-l em{color:var(--green);font-style:normal}
+.badge{background:rgba(29,158,117,.2);border:1px solid rgba(29,158,117,.4);color:#7FFFD4;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600}
+.hd-r{display:flex;align-items:center;gap:10px}
+.ver{font-size:12px;color:rgba(255,255,255,.35)}
+.btn-dl{padding:7px 16px;background:var(--green);border:none;border-radius:7px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit}
+.btn-dl:hover{background:var(--gd)}
+.main{display:flex;flex:1;overflow:hidden}
+
+/* CHAT */
+.cp{width:360px;flex-shrink:0;display:flex;flex-direction:column;background:#fff;border-right:1px solid var(--bd)}
+.ch{padding:12px 16px;border-bottom:1px solid var(--bd);font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;flex-shrink:0}
+.ch::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;animation:bl 2s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+.qbs{padding:9px 12px;border-bottom:1px solid var(--bd);display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0}
+.qb{padding:4px 10px;background:var(--gl);border:1px solid rgba(29,158,117,.2);border-radius:100px;font-size:11px;color:var(--gd);cursor:pointer;font-family:inherit;font-weight:600}
+.qb:hover{background:#c6edd9}
+.msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:11px}
+.msg{display:flex;flex-direction:column;gap:3px}
+.mu{align-items:flex-end}.ma{align-items:flex-start}
+.ml{font-size:11px;color:var(--mu);padding:0 4px}
+.bbl{max-width:88%;padding:10px 13px;border-radius:13px;font-size:13px;line-height:1.7}
+.mu .bbl{background:var(--green);color:#fff;border-radius:13px 13px 4px 13px}
+.ma .bbl{background:var(--bg);border:1px solid var(--bd);color:var(--tx);border-radius:13px 13px 13px 4px}
+.typ{display:inline-flex;align-items:center;gap:4px;padding:10px 13px;background:var(--bg);border:1px solid var(--bd);border-radius:13px 13px 13px 4px}
+.typ span{width:6px;height:6px;background:var(--mu);border-radius:50%;animation:dt 1.4s ease-in-out infinite}
+.typ span:nth-child(2){animation-delay:.2s}.typ span:nth-child(3){animation-delay:.4s}
+@keyframes dt{0%,80%,100%{transform:scale(.8);opacity:.4}40%{transform:scale(1.1);opacity:1}}
+.iw{padding:11px 12px;border-top:1px solid var(--bd);display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+textarea{flex:1;border:1.5px solid var(--bd);border-radius:11px;padding:9px 13px;font-size:13px;font-family:inherit;resize:none;outline:none;max-height:110px;color:var(--tx);line-height:1.55;background:var(--bg);transition:border-color .2s}
+textarea:focus{border-color:var(--green);background:#fff}
+.sb{width:40px;height:40px;background:var(--green);border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.sb:hover{background:var(--gd)}
+.sb:disabled{background:#ccc;cursor:not-allowed}
+.sb svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* PREVIEW */
+.pp{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.pb{padding:9px 14px;background:#fff;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.dots{display:flex;gap:5px}
+.dots span{width:11px;height:11px;border-radius:50%}
+.dr{background:#ff5f57}.dy{background:#febc2e}.dg{background:#28c840}
+.pu{flex:1;background:#f3f4f6;border-radius:6px;padding:5px 12px;font-size:12px;color:#9ca3af;text-align:center}
+.ps{font-size:12px;color:var(--mu);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.sd{width:7px;height:7px;border-radius:50%;background:#22c55e}
+.sd.on{background:#f59e0b;animation:bl 1s ease-in-out infinite}
+.fw{flex:1;overflow:hidden;position:relative;background:#e5e7eb}
+iframe#pv{width:1440px;height:900px;border:none;transform-origin:top left;position:absolute;top:0;left:0;background:#fff}
+
+.toast{position:fixed;bottom:20px;right:20px;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.tok{background:var(--green)}.terr{background:#e53e3e}
+</style>
+</head>
+<body>
+<div class="hd">
+  <div class="hd-l"><em>꾸준함</em> AI 관리자<div class="badge">Claude AI</div></div>
+  <div class="hd-r">
+    <span class="ver" id="ver">v1</span>
+    <button class="btn-dl" onclick="dl()">⬇ index.html 저장</button>
+  </div>
+</div>
+<div class="main">
+  <div class="cp">
+    <div class="ch">AI 수정 도우미</div>
+    <div class="qbs">
+      <button class="qb" onclick="qs('메뉴 항목 알려줘')">메뉴</button>
+      <button class="qb" onclick="qs('히어로 텍스트 알려줘')">히어로</button>
+      <button class="qb" onclick="qs('배너 내용 알려줘')">배너</button>
+      <button class="qb" onclick="qs('버튼 텍스트 전부 알려줘')">버튼</button>
+      <button class="qb" onclick="qs('카드 내용 알려줘')">카드</button>
+      <button class="qb" onclick="qs('푸터 내용 알려줘')">푸터</button>
+    </div>
+    <div class="msgs" id="msgs">
+      <div class="msg ma"><div class="ml">AI</div><div class="bbl">안녕하세요! 수정 요청을 입력하면 오른쪽 미리보기에 바로 반영돼요.<br><br>예시<br>• "히어로 제목 바꿔줘"<br>• "버튼 텍스트 수정해줘"<br>• "배너 내용 변경해줘"</div></div>
+    </div>
+    <div class="iw">
+      <textarea id="inp" placeholder="수정 요청 입력... (Enter 전송)" rows="1" onkeydown="kd(event)" oninput="ar(this)"></textarea>
+      <button class="sb" id="sb" onclick="go()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+    </div>
+  </div>
+  <div class="pp">
+    <div class="pb">
+      <div class="dots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div>
+      <div class="pu">꾸준함 홈페이지 미리보기</div>
+      <div class="ps"><div class="sd" id="sd"></div><span id="st">준비됨</span></div>
+    </div>
+    <div class="fw" id="fw"><iframe id="pv" sandbox="allow-scripts allow-same-origin"></iframe></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var H="<!DOCTYPE html>\n<html lang=\"ko\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>\uafb8\uc900\ud568 \u2014 \ub0b4\uc2e0 \ub300\ube44 \uc218\ud559\ubb38\uc81c\uc740\ud589<\/title>\n<style>\n  /* \u2500\u2500 S-Core Dream \ud3f0\ud2b8 \u2500\u2500 */\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream1.otf') format('opentype'); font-weight:100; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream2.otf') format('opentype'); font-weight:200; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream3.otf') format('opentype'); font-weight:300; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream4.otf') format('opentype'); font-weight:400; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream5.otf') format('opentype'); font-weight:500; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream6.otf') format('opentype'); font-weight:600; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream7.otf') format('opentype'); font-weight:700; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream8.otf') format('opentype'); font-weight:800; font-display:swap; }\n  @font-face { font-family:'SCDream'; src:url('fonts/SCDream9.otf') format('opentype'); font-weight:900; font-display:swap; }\n\n  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }\n  :root {\n    --green:#1D9E75; --green-dark:#158A62; --green-light:#E8F7F2;\n    --dark:#0F1A16; --text:#1C1917; --muted:#6B7280; --border:#E5E7EB;\n  }\n  html { scroll-behavior:smooth; }\n  body { font-family:'SCDream', sans-serif; background:#fff; color:var(--text); overflow-x:hidden; font-weight:400; }\n\n  /* \u2500\u2500 NAV \u2500\u2500 */\n  .nav { position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:64px;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(29,158,117,.12); }\n  .nav-logo { font-size:20px;font-weight:900;color:var(--dark);letter-spacing:-0.5px;text-decoration:none; }\n  .nav-logo span { color:var(--green); }\n  .nav-links { display:flex;gap:32px;list-style:none;font-size:14px;color:#444;font-weight:400; }\n  .nav-links a { color:inherit;text-decoration:none;transition:color .2s; }\n  .nav-links a:hover { color:var(--green); }\n  .nav-actions { display:flex;gap:10px; }\n  .btn-ghost { padding:9px 20px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;color:var(--text);background:#fff;cursor:pointer;font-family:'SCDream',sans-serif;font-weight:400;transition:border-color .2s,color .2s; }\n  .btn-ghost:hover { border-color:var(--green);color:var(--green); }\n  .btn-primary { padding:9px 22px;background:var(--green);border:none;border-radius:8px;font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;font-family:'SCDream',sans-serif;transition:background .2s,transform .1s; }\n  .btn-primary:hover { background:var(--green-dark);transform:translateY(-1px); }\n\n  /* \u2500\u2500 HERO \u2500\u2500 */\n  .hero { position:relative;width:100%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center; }\n\n  /* YouTube \ubc30\uacbd (\ud37c\uac00\uae30 \ud5c8\uc6a9 \ud6c4 display:none \u2192 block) */\n  .video-bg { display:block;position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden; }\n  .video-bg iframe { position:absolute;top:50%;left:50%;width:177.78vh;min-width:100%;height:100%;min-height:56.25vw;transform:translate(-50%,-50%);border:none; }\n\n  /* CSS \ubc30\uacbd (\uc784\uc2dc) */\n  .animated-bg { position:absolute;inset:0;z-index:0;background:var(--dark);overflow:hidden; }\n  .orb { position:absolute;border-radius:50%;filter:blur(80px);opacity:0.45;animation:float linear infinite; }\n  .orb-1 { width:600px;height:600px;background:#1D9E75;top:-10%;left:-15%;animation-duration:22s; }\n  .orb-2 { width:500px;height:500px;background:#0F6E56;top:30%;right:-10%;animation-duration:28s;animation-delay:-8s; }\n  .orb-3 { width:400px;height:400px;background:#1D9E75;bottom:-15%;left:35%;animation-duration:20s;animation-delay:-4s; }\n  .orb-4 { width:300px;height:300px;background:#085041;top:15%;left:45%;animation-duration:25s;animation-delay:-12s; }\n  @keyframes float { 0%{transform:translate(0,0) scale(1)}25%{transform:translate(40px,-60px) scale(1.05)}50%{transform:translate(-30px,30px) scale(.95)}75%{transform:translate(50px,50px) scale(1.08)}100%{transform:translate(0,0) scale(1)} }\n\n  .grid-pattern { position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px; }\n  .particles { position:absolute;inset:0;z-index:1;overflow:hidden; }\n  .particle { position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(29,158,117,.7);animation:rise linear infinite; }\n  @keyframes rise { 0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(-100vh) translateX(var(--drift,20px));opacity:0} }\n\n  .hero-overlay { position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(15,26,22,.3) 0%,rgba(15,26,22,.1) 45%,rgba(15,26,22,.58) 100%); }\n  .hero-content { position:relative;z-index:3;display:flex;flex-direction:column;align-items:center; }\n\n  .hero-badge { display:inline-flex;align-items:center;gap:8px;background:rgba(29,158,117,.22);border:1px solid rgba(29,158,117,.55);color:#7FFFD4;padding:7px 20px;border-radius:100px;font-size:13px;font-weight:500;margin-bottom:28px;backdrop-filter:blur(8px); }\n  .hero-badge::before { content:'';width:7px;height:7px;background:#1D9E75;border-radius:50%;animation:pulse 2s ease-in-out infinite; }\n  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)} }\n\n  .hero h1 { font-size:clamp(40px,5.5vw,72px);font-weight:900;color:#fff;line-height:1.15;letter-spacing:-1px;margin-bottom:20px; }\n  .hero h1 em { font-style:normal;color:#5DCAA5; }\n  .hero-sub { font-size:clamp(15px,1.5vw,19px);color:rgba(255,255,255,.78);margin-bottom:46px;line-height:1.8;font-weight:300; }\n\n  .hero-btns { display:flex;gap:14px; }\n  .btn-hero-main { padding:17px 44px;background:var(--green);border:none;border-radius:50px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:'SCDream',sans-serif;box-shadow:0 8px 32px rgba(29,158,117,.5);transition:background .2s,transform .15s,box-shadow .2s; }\n  .btn-hero-main:hover { background:var(--green-dark);transform:translateY(-2px);box-shadow:0 14px 44px rgba(29,158,117,.55); }\n  .btn-hero-sub { padding:17px 40px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.4);border-radius:50px;font-size:16px;font-weight:500;color:#fff;cursor:pointer;font-family:'SCDream',sans-serif;backdrop-filter:blur(8px);transition:background .2s,transform .15s; }\n  .btn-hero-sub:hover { background:rgba(255,255,255,.2);transform:translateY(-2px); }\n\n  .video-notice { position:absolute;bottom:100px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(0,0,0,.5);border:1px solid rgba(29,158,117,.4);color:rgba(255,255,255,.7);padding:8px 20px;border-radius:100px;font-size:12px;backdrop-filter:blur(8px);white-space:nowrap;font-weight:300; }\n  .video-notice span { color:#5DCAA5;font-weight:500; }\n\n  .mute-btn { display:none;position:absolute;bottom:32px;right:40px;z-index:10;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.38);color:#fff;font-size:18px;cursor:pointer;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background .2s; }\n\n  .scroll-hint { position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.45);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:300; }\n  .scroll-line { width:1px;height:44px;background:rgba(255,255,255,.28);overflow:hidden;position:relative; }\n  .scroll-line::after { content:'';position:absolute;top:-100%;width:100%;height:100%;background:rgba(255,255,255,.8);animation:scrollDrop 2.2s ease-in-out infinite; }\n  @keyframes scrollDrop { 0%{top:-100%}100%{top:100%} }\n\n  /* \u2500\u2500 BANNER \u2500\u2500 */\n  .banner { background:var(--dark);padding:22px 60px;display:flex;justify-content:space-between;align-items:center; }\n  .banner-text h4 { font-size:15px;font-weight:700;color:#fff; }\n  .banner-text p { font-size:13px;color:rgba(255,255,255,.45);margin-top:4px;font-weight:300; }\n  .banner-text a { font-size:13px;color:var(--green);margin-top:6px;display:block;text-decoration:none;font-weight:500; }\n  .price-pill { background:var(--green);color:#fff;padding:14px 28px;border-radius:50px;font-size:13px;font-weight:700;text-align:center;line-height:1.55; }\n\n  /* \u2500\u2500 STATS \u2500\u2500 */\n  .stats { padding:100px 60px;background:#fff; }\n  .stats-inner { max-width:900px;margin:0 auto; }\n  .section-label { font-size:12px;font-weight:600;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px; }\n  .stats h2 { font-size:clamp(26px,3vw,36px);font-weight:800;color:var(--text);line-height:1.38;margin-bottom:56px;letter-spacing:-0.5px; }\n  .stats-grid { display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:52px; }\n  .stat-item { padding:36px 28px;border-right:1px solid var(--border); }\n  .stat-item:last-child { border-right:none; }\n  .stat-item label { font-size:13px;color:var(--muted);display:block;margin-bottom:10px;font-weight:300; }\n  .stat-item .num { font-size:clamp(26px,2.5vw,34px);font-weight:900;color:var(--text);letter-spacing:-1px; }\n  .stat-item .num span { color:var(--green); }\n  .trust-grid { display:grid;grid-template-columns:1fr 1fr;gap:22px; }\n  .trust-card { background:var(--green-light);border-radius:18px;padding:32px;border:1px solid rgba(29,158,117,.14); }\n  .trust-card h3 { font-size:15.5px;font-weight:700;color:var(--text);margin-bottom:12px; }\n  .trust-card p { font-size:13px;color:#555;line-height:1.8;margin-bottom:20px;font-weight:300; }\n  .chips { display:flex;flex-wrap:wrap;gap:8px; }\n  .chip { background:#fff;border:1px solid rgba(29,158,117,.18);border-radius:7px;padding:5px 13px;font-size:12px;color:#444;font-weight:400; }\n\n  /* \u2500\u2500 TESTI \u2500\u2500 */\n  .testi { background:#F5FAF7;padding:100px 60px; }\n  .testi-inner { max-width:920px;margin:0 auto; }\n  .testi h2 { font-size:clamp(22px,2.5vw,30px);font-weight:800;color:var(--text);text-align:center;margin-bottom:52px;line-height:1.55;letter-spacing:-0.5px; }\n  .video-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px; }\n  .vcard { background:#fff;border-radius:18px;overflow:hidden;border:1px solid #E2EEE8;cursor:pointer;transition:transform .25s,box-shadow .25s; }\n  .vcard:hover { transform:translateY(-4px);box-shadow:0 16px 44px rgba(29,158,117,.13); }\n  .vthumb { height:176px;position:relative;display:flex;align-items:center;justify-content:center; }\n  .vt-1{background:#A8D8C4} .vt-2{background:#B5E0CE} .vt-3{background:#9DD2BA} .vt-4{background:#C0E8D6}\n  .play-btn { width:54px;height:54px;background:rgba(255,255,255,.88);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;padding-left:3px;transition:transform .2s,background .2s; }\n  .vcard:hover .play-btn { transform:scale(1.1);background:#fff; }\n  .vtag { position:absolute;top:12px;left:14px;background:#fff;border-radius:100px;padding:4px 13px;font-size:11.5px;color:#444;font-weight:500; }\n  .vinfo { padding:18px 22px 22px; }\n  .vinfo h4 { font-size:14.5px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:8px; }\n  .vinfo span { font-size:12.5px;color:#aaa;font-weight:300; }\n\n  /* \u2500\u2500 FOOTER CTA \u2500\u2500 */\n  .footer-cta { background:var(--green);padding:100px 60px;text-align:center; }\n  .footer-cta h2 { font-size:clamp(26px,3vw,38px);font-weight:900;color:#fff;margin-bottom:16px;letter-spacing:-0.5px; }\n  .footer-cta p { font-size:16px;color:rgba(255,255,255,.82);margin-bottom:40px;font-weight:300; }\n  .footer-cta button { padding:18px 52px;background:var(--dark);color:#fff;border:none;border-radius:50px;font-size:17px;font-weight:800;cursor:pointer;font-family:'SCDream',sans-serif;box-shadow:0 8px 28px rgba(15,26,22,.35);transition:transform .15s,background .2s; }\n  .footer-cta button:hover { transform:translateY(-2px);background:#1a2e26; }\n  .footer-bar { background:var(--dark);padding:28px 60px;display:flex;justify-content:space-between;align-items:center; }\n  .footer-bar .logo { font-size:16px;font-weight:900;color:#fff; }\n  .footer-bar .logo span { color:var(--green); }\n  .footer-bar p { font-size:12px;color:rgba(255,255,255,.3);font-weight:300; }\n<\/style>\n<\/head>\n<body>\n\n<nav class=\"nav\">\n  <a href=\"#\" class=\"nav-logo\">\uafb8<span>\uc900<\/span>\ud568<\/a>\n  <ul class=\"nav-links\">\n    <li><a href=\"#\">\uc11c\ube44\uc2a4 \uc18c\uac1c<\/a><\/li>\n    <li><a href=\"#\">\uae30\ub2a5\uc548\ub0b4<\/a><\/li>\n    <li><a href=\"#\">\uc694\uae08\uc548\ub0b4<\/a><\/li>\n    <li><a href=\"#\">\uc0ac\uc6a9\uac00\uc774\ub4dc<\/a><\/li>\n    <li><a href=\"#\">\ubb38\uc758\ud558\uae30<\/a><\/li>\n  <\/ul>\n  <div class=\"nav-actions\">\n    <button class=\"btn-ghost\">\ub85c\uadf8\uc778<\/button>\n    <button class=\"btn-primary\">\uc9c0\uae08 \uc2dc\uc791\ud558\uae30<\/button>\n  <\/div>\n<\/nav>\n\n<section class=\"hero\">\n  <div class=\"video-bg\">\n    <iframe\n      id=\"yt-iframe\"\n      src=\"https://www.youtube.com/embed/videoseries?list=PL02dReIbRgQSCnID6tFVZMxssrKWlyWal&autoplay=1&mute=1&loop=1&controls=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&enablejsapi=1\"\n      allow=\"autoplay; encrypted-media\" allowfullscreen\n    ><\/iframe>\n  <\/div>\n\n  <div class=\"hero-overlay\"><\/div>\n\n  <div class=\"hero-content\">\n    <div class=\"hero-badge\">\ubaa9\ud45c \u00b7 \ub8e8\ud2f4 \u00b7 \uae30\ub85d\uae4c\uc9c0<\/div>\n    <h1>\uafb8\uc900\ud568 <em>\ud558\ub098\ub85c<\/em> \ub05d!<\/h1>\n    <p class=\"hero-sub\">\ubaa9\ud45c\ub97c \ud604\uc2e4\ub85c \ub9cc\ub4dc\ub294 \uc131\uc7a5\ud615 \ub8e8\ud2f4 \uc2dc\uc2a4\ud15c<\/p>\n    <div class=\"hero-btns\">\n      <button class=\"btn-hero-main\">\uc9c0\uae08 \uc2dc\uc791\ud558\uae30 \u2192<\/button>\n      <button class=\"btn-hero-sub\">\uae30\ub2a5 \ub458\ub7ec\ubcf4\uae30<\/button>\n    <\/div>\n  <\/div>\n\n  <button class=\"mute-btn\" id=\"muteBtn\" style=\"display:flex;\">\ud83d\udd07<\/button>\n\n  <div class=\"scroll-hint\">\n    <span>scroll<\/span>\n    <div class=\"scroll-line\"><\/div>\n  <\/div>\n<\/section>\n\n<div class=\"banner\">\n  <div class=\"banner-text\">\n    <h4>\uafb8\uc900\ud55c \uc131\uc7a5\uc744 \uc704\ud55c \uad00\ub9ac \uc2dc\uc2a4\ud15c<\/h4>\n    <p>\uc6d4 99,000\uc6d0 \u00b7 7\uc77c \ubb34\ub8cc \uccb4\ud5d8 \uc81c\uacf5<\/p>\n    <a href=\"#\">\uc790\uc138\ud788 \ubcf4\uae30 \u203a<\/a>\n  <\/div>\n  <div class=\"price-pill\">\n    <div style=\"font-size:10px;font-weight:500;letter-spacing:2px;opacity:0.85;margin-bottom:3px;\">MASTER<\/div>\n    <div style=\"font-size:15px;font-weight:900;\">\uc6d4 99,000\uc6d0<\/div>\n    <div style=\"font-size:10px;font-weight:300;opacity:0.8;margin-top:3px;\">\ubaa8\ub4e0 \uc11c\ube44\uc2a4 \uc774\uc6a9 \uac00\ub2a5<\/div>\n  <\/div>\n<\/div>\n\n<section class=\"stats\">\n  <div class=\"stats-inner\">\n    <div class=\"section-label\">Why \uafb8\uc900\ud568<\/div>\n    <h2>\ubaa9\ud45c \uc124\uc815\ubd80\ud130 \uc2e4\ud589 \uae30\ub85d\uae4c\uc9c0<br>\ud55c\uacf3\uc5d0\uc11c<\/h2>\n    <div style=\"display:flex;align-items:center;gap:0;margin-bottom:52px;\">\n\n      <div style=\"flex:1;text-align:center;padding:32px 20px;\">\n        <div style=\"width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);\">\n          <span style=\"font-size:18px;font-weight:900;color:var(--green);\">01<\/span>\n        <\/div>\n        <div style=\"font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;\">\ubaa9\ud45c<\/div>\n        <div style=\"font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;\">\uc131\uc7a5 \uac00\uc774\ub4dc \ubc0f<br>\uac15\uc758 \uc81c\uacf5<\/div>\n      <\/div>\n\n      <div style=\"font-size:28px;color:var(--green);font-weight:300;flex-shrink:0;\">\u2192<\/div>\n\n      <div style=\"flex:1;text-align:center;padding:32px 20px;\">\n        <div style=\"width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);\">\n          <span style=\"font-size:18px;font-weight:900;color:var(--green);\">02<\/span>\n        <\/div>\n        <div style=\"font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;\">\uc2e4\ud589<\/div>\n        <div style=\"font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;\">\ub370\uc77c\ub9ac \ub85c\uc2a4\ud130 \uae30\ubc18<br>\uc2e4\ud589 \uad00\ub9ac<\/div>\n      <\/div>\n\n      <div style=\"font-size:28px;color:var(--green);font-weight:300;flex-shrink:0;\">\u2192<\/div>\n\n      <div style=\"flex:1;text-align:center;padding:32px 20px;\">\n        <div style=\"width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);\">\n          <span style=\"font-size:18px;font-weight:900;color:var(--green);\">03<\/span>\n        <\/div>\n        <div style=\"font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;\">\uae30\ub85d<\/div>\n        <div style=\"font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;\">\uc18c\ube44\uc640 \ud65c\ub3d9<br>\ud750\ub984 \uae30\ub85d<\/div>\n      <\/div>\n\n      <div style=\"font-size:28px;color:var(--green);font-weight:300;flex-shrink:0;\">\u2192<\/div>\n\n      <div style=\"flex:1;text-align:center;padding:32px 20px;\">\n        <div style=\"width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);\">\n          <span style=\"font-size:18px;font-weight:900;color:var(--green);\">04<\/span>\n        <\/div>\n        <div style=\"font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;\">\uc815\ubcf4<\/div>\n        <div style=\"font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;\">\uadf8\ub8f9 \ucee4\ubba4\ub2c8\ud2f0 \ubc0f<br>\uc790\ub8cc \uacf5\uc720<\/div>\n      <\/div>\n\n    <\/div>\n    <div class=\"trust-grid\">\n      <div class=\"trust-card\" style=\"display:flex;flex-direction:column;justify-content:space-between;\">\n        <p style=\"font-size:16px;font-weight:700;color:var(--text);line-height:1.9;margin-bottom:24px;\">\uafb8\uc900\ud568\uc740 \uac00\uc7a5 \uac15\ub825\ud55c \ubb34\uae30\uc785\ub2c8\ub2e4<br>\uc2dc\uc791\uc740 \ub204\uad6c\ub098 \ud560 \uc218 \uc788\uc9c0\ub9cc<br>\uc9c0\uc18d\ud558\ub294 \uc0ac\ub78c\uc740 \ub9ce\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4<br>\uc6b0\ub9ac\ub294 \uc131\uc7a5\uc744 \uc9c0\uc18d\ud560 \uc218 \uc788\ub294<br>\ud750\ub984\uc744 \ub9cc\ub4ed\ub2c8\ub2e4<\/p>\n        <div class=\"chips\">\n          <span class=\"chip\">\ubaa9\ud45c \uad00\ub9ac<\/span>\n          <span class=\"chip\">\uc2e4\ud589 \uae30\ub85d<\/span>\n          <span class=\"chip\">\uc18c\ube44 \uad00\ub9ac<\/span>\n          <span class=\"chip\">\uadf8\ub8f9 \uc2dc\uc2a4\ud15c<\/span>\n        <\/div>\n      <\/div>\n      <div class=\"trust-card\" style=\"display:flex;flex-direction:column;justify-content:space-between;\">\n        <p style=\"font-size:16px;font-weight:700;color:var(--text);line-height:1.9;margin-bottom:24px;\">\ubcf5\uc7a1\ud55c \uad00\ub9ac\ub294 \uc904\uc774\uace0<br>\uc2e4\ud589\uc5d0\ub9cc \ub354 \uc9d1\uc911\ud560 \uc218 \uc788\ub3c4\ub85d<br>\ud558\ub098\uc758 \ud750\ub984\uc73c\ub85c \uc124\uacc4\ud588\uc2b5\ub2c8\ub2e4<\/p>\n        <div class=\"chips\">\n          <span class=\"chip\">\ub370\uc77c\ub9ac \ub85c\uc2a4\ud130<\/span>\n          <span class=\"chip\">\uac00\uacc4\ubd80<\/span>\n          <span class=\"chip\">\ucee4\ubba4\ub2c8\ud2f0<\/span>\n          <span class=\"chip\">\uc131\uc7a5 \uac00\uc774\ub4dc<\/span>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/section>\n\n\n\n<section class=\"footer-cta\">\n  <h2>\uc800\ud76c\uc640 \ud568\uaed8 \uc9c0\uae08 \uc2dc\uc791\ud558\uc138\uc694<\/h2>\n  <p>7\uc77c \ubb34\ub8cc \uccb4\ud5d8 \ud6c4 \uacb0\uc815\ud558\uc138\uc694. \uc2e0\uc6a9\uce74\ub4dc \ub4f1\ub85d \uc5c6\uc774 \ubc14\ub85c \uc2dc\uc791\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.<\/p>\n  <button>\uc9c0\uae08 \uc2dc\uc791\ud558\uae30 \u2192<\/button>\n<\/section>\n\n<footer class=\"footer-bar\">\n  <div class=\"logo\">\uafb8<span>\uc900<\/span>\ud568<\/div>\n  <p>\u00a9 2026 \uafb8\uc900\ud568. All rights reserved.<\/p>\n<\/footer>\n\n<script>\n\n  var isMuted = true;\n  document.getElementById('muteBtn').addEventListener('click', function() {\n    var iframe = document.getElementById('yt-iframe');\n    if (!iframe) return;\n    iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:isMuted?'unMute':'mute',args:[]}), '*');\n    this.textContent = isMuted ? '\ud83d\udd0a' : '\ud83d\udd07';\n    isMuted = !isMuted;\n  });\n<\/script>\n<\/body>\n<\/html>\n";
+var v=1,busy=false,hist=[];
+
+function pvHTML(h){
+  // 미리보기용: 유튜브 제거, 폰트 대체, 히어로 배경 초록으로
+  return h
+    .replace(/@font-face[^}]+\}/g,'')
+    .replace(/font-family:'SCDream',\s*sans-serif/g,"font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif")
+    .replace(/\.video-bg\s*\{[^}]+\}/,'')
+    .replace('<div class="video-bg">','<div class="video-bg" style="display:none">')
+    .replace('.animated-bg { position:absolute;inset:0;z-index:0;background:var(--dark);overflow:hidden; }',
+             '.animated-bg { position:absolute;inset:0;z-index:0;background:linear-gradient(135deg,#1D9E75,#085041);overflow:hidden; }');
+}
+
+function render(h){
+  var iframe=document.getElementById('pv');
+  iframe.srcdoc=pvHTML(h);
+}
+
+function scale(){
+  var fw=document.getElementById('fw');
+  var pv=document.getElementById('pv');
+  var s=fw.clientWidth/1440;
+  pv.style.transform='scale('+s+')';
+  pv.style.height=(fw.clientHeight/s)+'px';
+}
+window.addEventListener('resize',scale);
+
+render(H);
+setTimeout(scale,200);
+setTimeout(scale,800);
+
+function dl(){
+  var b=new Blob([H],{type:'text/html;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='index.html';a.click();
+  toast('✓ 저장 완료','tok');
+}
+
+function addMsg(r,t){
+  var m=document.getElementById('msgs');
+  var d=document.createElement('div');
+  d.className='msg '+(r==='user'?'mu':'ma');
+  d.innerHTML='<div class="ml">'+(r==='user'?'나':'AI')+'<\/div><div class="bbl">'+t.replace(/\n/g,'<br>')+'<\/div>';
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+
+function showTyp(){
+  var m=document.getElementById('msgs');
+  var d=document.createElement('div');d.id='typ';d.className='msg ma';
+  d.innerHTML='<div class="ml">AI<\/div><div class="typ"><span><\/span><span><\/span><span><\/span><\/div>';
+  m.appendChild(d);m.scrollTop=m.scrollHeight;
+}
+function hideTyp(){var e=document.getElementById('typ');if(e)e.remove();}
+
+function setSt(on){
+  document.getElementById('sd').className='sd'+(on?' on':'');
+  document.getElementById('st').textContent=on?'수정 중...':'준비됨';
+}
+
+function toast(msg,cls){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+cls;
+  setTimeout(function(){t.className='toast';},3000);
+}
+
+async function go(){
+  if(busy)return;
+  var inp=document.getElementById('inp');
+  var txt=inp.value.trim();if(!txt)return;
+  inp.value='';inp.style.height='auto';
+  addMsg('user',txt);
+  busy=true;document.getElementById('sb').disabled=true;
+  showTyp();setSt(true);
+  hist.push({role:'user',content:txt});
+  try{
+    var sys='당신은 꾸준함 홈페이지 AI 편집 도우미입니다.\n현재 HTML:\n'+H+'\n\n규칙:\n1. HTML 수정 시 완전한 HTML을 <HTML_UPDATE>와 </HTML_UPDATE> 사이에 반환 후 간단 설명\n2. 확인/질문은 텍스트로만\n3. 완전한 HTML만 반환\n4. 한국어 답변\n5. SCDream 폰트·YouTube 링크·#1D9E75 변경 금지';
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,system:sys,messages:hist})
+    });
+    var data=await res.json();
+    var ai=data.content[0].text;
+    hist.push({role:'assistant',content:ai});
+    hideTyp();
+    var m=ai.match(/<HTML_UPDATE>([\s\S]*?)<\/HTML_UPDATE>/);
+    if(m){
+      H=m[1].trim();v++;
+      document.getElementById('ver').textContent='v'+v;
+      render(H);setTimeout(scale,300);
+      var clean=ai.replace(/<HTML_UPDATE>[\s\S]*?<\/HTML_UPDATE>/,'').trim();
+      addMsg('ai',(clean||'수정 완료!')+'\n\n✅ 미리보기가 업데이트됐어요.');
+      toast('✓ 미리보기 업데이트','tok');
+    } else {
+      addMsg('ai',ai);
+    }
+  }catch(e){
+    hideTyp();addMsg('ai','오류 발생. 다시 시도해 주세요.');toast('오류','terr');
+  }finally{
+    busy=false;document.getElementById('sb').disabled=false;setSt(false);
+  }
+}
+function qs(t){document.getElementById('inp').value=t;go();}
+function kd(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();go();}}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+<\/script>
+</body>
+</html>
