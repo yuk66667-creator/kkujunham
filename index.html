@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>꾸준함 - 성장을 위한 최적의 시스템</title>
+<style>
+  /* ── S-Core Dream 폰트 ── */
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream1.otf') format('opentype'); font-weight:100; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream2.otf') format('opentype'); font-weight:200; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream3.otf') format('opentype'); font-weight:300; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream4.otf') format('opentype'); font-weight:400; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream5.otf') format('opentype'); font-weight:500; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream6.otf') format('opentype'); font-weight:600; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream7.otf') format('opentype'); font-weight:700; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream8.otf') format('opentype'); font-weight:800; font-display:swap; }
+  @font-face { font-family:'SCDream'; src:url('fonts/SCDream9.otf') format('opentype'); font-weight:900; font-display:swap; }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --green:#1D9E75; --green-dark:#158A62; --green-light:#E8F7F2;
+    --dark:#0F1A16; --text:#1C1917; --muted:#6B7280; --border:#E5E7EB;
+  }
+  html { scroll-behavior:smooth; }
+  body { font-family:'SCDream', sans-serif; background:#fff; color:var(--text); overflow-x:hidden; font-weight:400; }
+
+  /* ── NAV ── */
+  .nav { position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:64px;background:rgba(255,255,255,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(29,158,117,.12); }
+  .nav-logo { font-size:20px;font-weight:900;color:var(--dark);letter-spacing:-0.5px;text-decoration:none; }
+  .nav-logo span { color:var(--green); }
+  .nav-links { display:flex;gap:32px;list-style:none;font-size:14px;color:#444;font-weight:400; }
+  .nav-links a { color:inherit;text-decoration:none;transition:color .2s; }
+  .nav-links a:hover { color:var(--green); }
+  .nav-actions { display:flex;gap:10px; }
+  .btn-ghost { padding:9px 20px;border:1px solid var(--border);border-radius:8px;font-size:13.5px;color:var(--text);background:#fff;cursor:pointer;font-family:'SCDream',sans-serif;font-weight:400;transition:border-color .2s,color .2s; }
+  .btn-ghost:hover { border-color:var(--green);color:var(--green); }
+  .btn-primary { padding:9px 22px;background:var(--green);border:none;border-radius:8px;font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;font-family:'SCDream',sans-serif;transition:background .2s,transform .1s; }
+  .btn-primary:hover { background:var(--green-dark);transform:translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero { position:relative;width:100%;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;text-align:center; }
+
+  /* YouTube 배경 (퍼가기 허용 후 display:none → block) */
+  .video-bg { display:block;position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden; }
+  .video-bg iframe { position:absolute;top:50%;left:50%;width:177.78vh;min-width:100%;height:100%;min-height:56.25vw;transform:translate(-50%,-50%);border:none; }
+
+  /* CSS 배경 (임시) */
+  .animated-bg { position:absolute;inset:0;z-index:0;background:var(--dark);overflow:hidden; }
+  .orb { position:absolute;border-radius:50%;filter:blur(80px);opacity:0.45;animation:float linear infinite; }
+  .orb-1 { width:600px;height:600px;background:#1D9E75;top:-10%;left:-15%;animation-duration:22s; }
+  .orb-2 { width:500px;height:500px;background:#0F6E56;top:30%;right:-10%;animation-duration:28s;animation-delay:-8s; }
+  .orb-3 { width:400px;height:400px;background:#1D9E75;bottom:-15%;left:35%;animation-duration:20s;animation-delay:-4s; }
+  .orb-4 { width:300px;height:300px;background:#085041;top:15%;left:45%;animation-duration:25s;animation-delay:-12s; }
+  @keyframes float { 0%{transform:translate(0,0) scale(1)}25%{transform:translate(40px,-60px) scale(1.05)}50%{transform:translate(-30px,30px) scale(.95)}75%{transform:translate(50px,50px) scale(1.08)}100%{transform:translate(0,0) scale(1)} }
+
+  .grid-pattern { position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px; }
+  .particles { position:absolute;inset:0;z-index:1;overflow:hidden; }
+  .particle { position:absolute;width:2px;height:2px;border-radius:50%;background:rgba(29,158,117,.7);animation:rise linear infinite; }
+  @keyframes rise { 0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(-100vh) translateX(var(--drift,20px));opacity:0} }
+
+  .hero-overlay { position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(15,26,22,.3) 0%,rgba(15,26,22,.1) 45%,rgba(15,26,22,.58) 100%); }
+  .hero-content { position:relative;z-index:3;display:flex;flex-direction:column;align-items:center; }
+
+  .hero-badge { display:inline-flex;align-items:center;gap:8px;background:rgba(29,158,117,.22);border:1px solid rgba(29,158,117,.55);color:#7FFFD4;padding:7px 20px;border-radius:100px;font-size:13px;font-weight:500;margin-bottom:28px;backdrop-filter:blur(8px); }
+  .hero-badge::before { content:'';width:7px;height:7px;background:#1D9E75;border-radius:50%;animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)} }
+
+  .hero h1 { font-size:clamp(40px,5.5vw,72px);font-weight:900;color:#fff;line-height:1.15;letter-spacing:-1px;margin-bottom:20px; }
+  .hero h1 em { font-style:normal;color:#5DCAA5; }
+  .hero-sub { font-size:clamp(15px,1.5vw,19px);color:rgba(255,255,255,.78);margin-bottom:46px;line-height:1.8;font-weight:300; }
+
+  .hero-btns { display:flex;gap:14px; }
+  .btn-hero-main { padding:17px 44px;background:var(--green);border:none;border-radius:50px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:'SCDream',sans-serif;box-shadow:0 8px 32px rgba(29,158,117,.5);transition:background .2s,transform .15s,box-shadow .2s; }
+  .btn-hero-main:hover { background:var(--green-dark);transform:translateY(-2px);box-shadow:0 14px 44px rgba(29,158,117,.55); }
+  .btn-hero-sub { padding:17px 40px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.4);border-radius:50px;font-size:16px;font-weight:500;color:#fff;cursor:pointer;font-family:'SCDream',sans-serif;backdrop-filter:blur(8px);transition:background .2s,transform .15s; }
+  .btn-hero-sub:hover { background:rgba(255,255,255,.2);transform:translateY(-2px); }
+
+  .video-notice { position:absolute;bottom:100px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(0,0,0,.5);border:1px solid rgba(29,158,117,.4);color:rgba(255,255,255,.7);padding:8px 20px;border-radius:100px;font-size:12px;backdrop-filter:blur(8px);white-space:nowrap;font-weight:300; }
+  .video-notice span { color:#5DCAA5;font-weight:500; }
+
+  .mute-btn { display:none;position:absolute;bottom:32px;right:40px;z-index:10;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.38);color:#fff;font-size:18px;cursor:pointer;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:background .2s; }
+
+  .scroll-hint { position:absolute;bottom:36px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:8px;color:rgba(255,255,255,.45);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:300; }
+  .scroll-line { width:1px;height:44px;background:rgba(255,255,255,.28);overflow:hidden;position:relative; }
+  .scroll-line::after { content:'';position:absolute;top:-100%;width:100%;height:100%;background:rgba(255,255,255,.8);animation:scrollDrop 2.2s ease-in-out infinite; }
+  @keyframes scrollDrop { 0%{top:-100%}100%{top:100%} }
+
+  /* ── BANNER ── */
+  .banner { background:var(--dark);padding:22px 60px;display:flex;justify-content:space-between;align-items:center; }
+  .banner-text h4 { font-size:15px;font-weight:700;color:#fff; }
+  .banner-text p { font-size:13px;color:rgba(255,255,255,.45);margin-top:4px;font-weight:300; }
+  .banner-text a { font-size:13px;color:var(--green);margin-top:6px;display:block;text-decoration:none;font-weight:500; }
+  .price-pill { background:var(--green);color:#fff;padding:14px 28px;border-radius:50px;font-size:13px;font-weight:700;text-align:center;line-height:1.55; }
+
+  /* ── STATS ── */
+  .stats { padding:100px 60px;background:#fff; }
+  .stats-inner { max-width:900px;margin:0 auto; }
+  .section-label { font-size:12px;font-weight:600;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px; }
+  .stats h2 { font-size:clamp(26px,3vw,36px);font-weight:800;color:var(--text);line-height:1.38;margin-bottom:56px;letter-spacing:-0.5px; }
+  .stats-grid { display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:52px; }
+  .stat-item { padding:36px 28px;border-right:1px solid var(--border); }
+  .stat-item:last-child { border-right:none; }
+  .stat-item label { font-size:13px;color:var(--muted);display:block;margin-bottom:10px;font-weight:300; }
+  .stat-item .num { font-size:clamp(26px,2.5vw,34px);font-weight:900;color:var(--text);letter-spacing:-1px; }
+  .stat-item .num span { color:var(--green); }
+  .trust-grid { display:grid;grid-template-columns:1fr 1fr;gap:22px; }
+  .trust-card { background:var(--green-light);border-radius:18px;padding:32px;border:1px solid rgba(29,158,117,.14); }
+  .trust-card h3 { font-size:15.5px;font-weight:700;color:var(--text);margin-bottom:12px; }
+  .trust-card p { font-size:13px;color:#555;line-height:1.8;margin-bottom:20px;font-weight:300; }
+  .chips { display:flex;flex-wrap:wrap;gap:8px; }
+  .chip { background:#fff;border:1px solid rgba(29,158,117,.18);border-radius:7px;padding:5px 13px;font-size:12px;color:#444;font-weight:400; }
+
+  /* ── TESTI ── */
+  .testi { background:#F5FAF7;padding:100px 60px; }
+  .testi-inner { max-width:920px;margin:0 auto; }
+  .testi h2 { font-size:clamp(22px,2.5vw,30px);font-weight:800;color:var(--text);text-align:center;margin-bottom:52px;line-height:1.55;letter-spacing:-0.5px; }
+  .video-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px; }
+  .vcard { background:#fff;border-radius:18px;overflow:hidden;border:1px solid #E2EEE8;cursor:pointer;transition:transform .25s,box-shadow .25s; }
+  .vcard:hover { transform:translateY(-4px);box-shadow:0 16px 44px rgba(29,158,117,.13); }
+  .vthumb { height:176px;position:relative;display:flex;align-items:center;justify-content:center; }
+  .vt-1{background:#A8D8C4} .vt-2{background:#B5E0CE} .vt-3{background:#9DD2BA} .vt-4{background:#C0E8D6}
+  .play-btn { width:54px;height:54px;background:rgba(255,255,255,.88);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;padding-left:3px;transition:transform .2s,background .2s; }
+  .vcard:hover .play-btn { transform:scale(1.1);background:#fff; }
+  .vtag { position:absolute;top:12px;left:14px;background:#fff;border-radius:100px;padding:4px 13px;font-size:11.5px;color:#444;font-weight:500; }
+  .vinfo { padding:18px 22px 22px; }
+  .vinfo h4 { font-size:14.5px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:8px; }
+  .vinfo span { font-size:12.5px;color:#aaa;font-weight:300; }
+
+  /* ── FOOTER CTA ── */
+  .footer-cta { background:var(--green);padding:100px 60px;text-align:center; }
+  .footer-cta h2 { font-size:clamp(26px,3vw,38px);font-weight:900;color:#fff;margin-bottom:16px;letter-spacing:-0.5px; }
+  .footer-cta p { font-size:16px;color:rgba(255,255,255,.82);margin-bottom:40px;font-weight:300; }
+  .footer-cta button { padding:18px 52px;background:var(--dark);color:#fff;border:none;border-radius:50px;font-size:17px;font-weight:800;cursor:pointer;font-family:'SCDream',sans-serif;box-shadow:0 8px 28px rgba(15,26,22,.35);transition:transform .15s,background .2s; }
+  .footer-cta button:hover { transform:translateY(-2px);background:#1a2e26; }
+  .footer-bar { background:var(--dark);padding:28px 60px;display:flex;justify-content:space-between;align-items:center; }
+  .footer-bar .logo { font-size:16px;font-weight:900;color:#fff; }
+  .footer-bar .logo span { color:var(--green); }
+  .footer-bar p { font-size:12px;color:rgba(255,255,255,.3);font-weight:300; }
+
+  /* ── 햄버거 메뉴 ── */
+  .hamburger { display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;z-index:200; }
+  .hamburger span { display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all .3s; }
+  .hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+  .hamburger.open span:nth-child(2) { opacity:0; }
+  .hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+
+  .mobile-menu { display:none;position:fixed;inset:0;background:rgba(255,255,255,.97);backdrop-filter:blur(12px);z-index:150;flex-direction:column;align-items:center;justify-content:center;gap:32px; }
+  .mobile-menu.open { display:flex; }
+  .mobile-menu a { font-size:22px;font-weight:700;color:var(--text);text-decoration:none; }
+  .mobile-menu a:hover { color:var(--green); }
+  .mobile-menu .m-btns { display:flex;flex-direction:column;gap:12px;margin-top:16px;width:200px; }
+  .mobile-menu .m-btns button { padding:14px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'SCDream',sans-serif;width:100%; }
+  .mobile-menu .m-login { background:white;border:1.5px solid var(--border);color:var(--text); }
+  .mobile-menu .m-start { background:var(--green);border:none;color:white; }
+
+  /* ── 반응형 ── */
+  @media (max-width: 768px) {
+    /* NAV */
+    .nav { padding:0 20px;height:56px; }
+    .nav-links { display:none; }
+    .nav-actions { display:none; }
+    .hamburger { display:flex; }
+
+    /* HERO */
+    .hero-btns { flex-direction:column;gap:12px;width:100%;padding:0 24px; }
+    .btn-hero-main { padding:15px 32px;font-size:15px; }
+    .btn-hero-sub { padding:15px 32px;font-size:15px; }
+    .mute-btn { bottom:20px;right:16px;width:40px;height:40px;font-size:16px; }
+    .scroll-hint { display:none; }
+
+    /* BANNER */
+    .banner { padding:20px 20px;flex-direction:column;gap:16px;text-align:center; }
+    .banner-text a { justify-content:center; }
+
+    /* STATS */
+    .stats { padding:60px 20px; }
+    .stats h2 { font-size:24px;margin-bottom:36px; }
+
+    /* 화살표 플로우 */
+    .stats > div > div[style*="display:flex;align-items:center"] { flex-direction:column !important;gap:0 !important; }
+    .stats > div > div[style*="display:flex;align-items:center"] > div[style*="font-size:28px"] { transform:rotate(90deg);margin:4px 0; }
+
+    /* TRUST GRID */
+    .trust-grid { grid-template-columns:1fr; }
+
+    /* FOOTER */
+    .footer-cta { padding:60px 20px; }
+    .footer-cta button { padding:15px 36px;font-size:15px; }
+    .footer-bar { padding:20px;flex-direction:column;gap:8px;text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="#" class="nav-logo">꾸<span>준</span>함</a>
+  <ul class="nav-links">
+    <li><a href="#">서비스 소개</a></li>
+    <li><a href="#">기능안내</a></li>
+    <li><a href="#">요금안내</a></li>
+    <li><a href="#">사용가이드</a></li>
+    <li><a href="#">문의하기</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-ghost">로그인</button>
+    <button class="btn-primary">지금 시작하기</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#" onclick="toggleMenu()">서비스 소개</a>
+  <a href="#" onclick="toggleMenu()">기능안내</a>
+  <a href="#" onclick="toggleMenu()">요금안내</a>
+  <a href="#" onclick="toggleMenu()">사용가이드</a>
+  <a href="#" onclick="toggleMenu()">문의하기</a>
+  <div class="m-btns">
+    <button class="m-login" onclick="toggleMenu()">로그인</button>
+    <button class="m-start" onclick="toggleMenu()">지금 시작하기</button>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="video-bg">
+    <iframe
+      id="yt-iframe"
+      src="https://www.youtube.com/embed/videoseries?list=PL02dReIbRgQSCnID6tFVZMxssrKWlyWal&autoplay=1&mute=1&loop=1&controls=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&enablejsapi=1"
+      allow="autoplay; encrypted-media" allowfullscreen
+    ></iframe>
+  </div>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">목표 · 루틴 · 기록까지</div>
+    <h1>꾸준함 <em>하나로</em> 끝!</h1>
+    <p class="hero-sub">목표를 현실로 만드는 성장형 루틴 시스템</p>
+    <div class="hero-btns">
+      <button class="btn-hero-main">지금 시작하기 →</button>
+      <button class="btn-hero-sub">기능 둘러보기</button>
+    </div>
+  </div>
+
+  <button class="mute-btn" id="muteBtn" style="display:flex;">🔇</button>
+
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="banner">
+  <div class="banner-text">
+    <h4>꾸준한 성장을 위한 관리 시스템</h4>
+    <p>월 99,000원 · 7일 무료 체험 제공</p>
+    <a href="#">자세히 보기 ›</a>
+  </div>
+  <div class="price-pill">
+    <div style="font-size:10px;font-weight:500;letter-spacing:2px;opacity:0.85;margin-bottom:3px;">MASTER</div>
+    <div style="font-size:15px;font-weight:900;">월 99,000원</div>
+    <div style="font-size:10px;font-weight:300;opacity:0.8;margin-top:3px;">모든 서비스 이용 가능</div>
+  </div>
+</div>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div class="section-label">Why 꾸준함</div>
+    <h2>목표 설정부터 실행 기록까지<br>한곳에서</h2>
+    <div style="display:flex;align-items:center;gap:0;margin-bottom:52px;">
+
+      <div style="flex:1;text-align:center;padding:32px 20px;">
+        <div style="width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);">
+          <span style="font-size:18px;font-weight:900;color:var(--green);">01</span>
+        </div>
+        <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">목표</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;">성장 가이드 및<br>강의 제공</div>
+      </div>
+
+      <div style="font-size:28px;color:var(--green);font-weight:300;flex-shrink:0;">→</div>
+
+      <div style="flex:1;text-align:center;padding:32px 20px;">
+        <div style="width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);">
+          <span style="font-size:18px;font-weight:900;color:var(--green);">02</span>
+        </div>
+        <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">실행</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;">데일리 로스터 기반<br>실행 관리</div>
+      </div>
+
+      <div style="font-size:28px;color:var(--green);font-weight:300;flex-shrink:0;">→</div>
+
+      <div style="flex:1;text-align:center;padding:32px 20px;">
+        <div style="width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);">
+          <span style="font-size:18px;font-weight:900;color:var(--green);">03</span>
+        </div>
+        <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">기록</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;">소비와 활동<br>흐름 기록</div>
+      </div>
+
+      <div style="font-size:28px;color:var(--green);font-weight:300;flex-shrink:0;">→</div>
+
+      <div style="flex:1;text-align:center;padding:32px 20px;">
+        <div style="width:52px;height:52px;background:var(--green-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:2px solid var(--green);">
+          <span style="font-size:18px;font-weight:900;color:var(--green);">04</span>
+        </div>
+        <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:8px;">정보</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.7;font-weight:300;">그룹 커뮤니티 및<br>자료 공유</div>
+      </div>
+
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <p style="font-size:16px;font-weight:700;color:var(--text);line-height:1.9;margin-bottom:24px;">꾸준함은 가장 강력한 무기입니다<br>시작은 누구나 할 수 있지만<br>지속하는 사람은 많지 않습니다<br>우리는 성장을 지속할 수 있는<br>흐름을 만듭니다</p>
+        <div class="chips">
+          <span class="chip">목표 관리</span>
+          <span class="chip">실행 기록</span>
+          <span class="chip">소비 관리</span>
+          <span class="chip">그룹 시스템</span>
+        </div>
+      </div>
+      <div class="trust-card" style="display:flex;flex-direction:column;justify-content:space-between;">
+        <p style="font-size:16px;font-weight:700;color:var(--text);line-height:1.9;margin-bottom:24px;">복잡한 관리는 줄이고<br>실행에만 더 집중할 수 있도록<br>하나의 흐름으로 설계했습니다</p>
+        <div class="chips">
+          <span class="chip">데일리 로스터</span>
+          <span class="chip">가계부</span>
+          <span class="chip">커뮤니티</span>
+          <span class="chip">성장 가이드</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="footer-cta">
+  <h2>저희와 함께 지금 시작하세요</h2>
+  <p>7일 무료 체험 후 결정하세요. 신용카드 등록 없이 바로 시작할 수 있습니다.</p>
+  <button>지금 시작하기 →</button>
+</section>
+
+<footer class="footer-bar">
+  <div class="logo">꾸<span>준</span>함</div>
+  <p>© 2026 꾸준함. All rights reserved.</p>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('open') ? 'hidden' : '';
+  }
+
+  var isMuted = true;
+  document.getElementById('muteBtn').addEventListener('click', function() {
+    var iframe = document.getElementById('yt-iframe');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:isMuted?'unMute':'mute',args:[]}), '*');
+    this.textContent = isMuted ? '🔊' : '🔇';
+    isMuted = !isMuted;
+  });
+</script>
+</body>
+</html>
