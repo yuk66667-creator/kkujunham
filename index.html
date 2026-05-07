@@ -42,6 +42,7 @@
 
   /* YouTube 배경 (퍼가기 허용 후 display:none → block) */
   .video-bg { display:block;position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden; }
+  .video-bg::after { content:'';position:absolute;inset:0;z-index:1; }
   .video-bg iframe { position:absolute;top:50%;left:50%;width:177.78vh;min-width:100%;height:100%;min-height:56.25vw;transform:translate(-50%,-50%);border:none; }
 
   /* CSS 배경 (임시) */
@@ -242,7 +243,7 @@
   <div class="video-bg">
     <iframe
       id="yt-iframe"
-      src="https://www.youtube.com/embed/videoseries?list=PL02dReIbRgQSCnID6tFVZMxssrKWlyWal&autoplay=1&mute=1&loop=1&controls=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&enablejsapi=1"
+      src="https://www.youtube.com/embed/videoseries?list=PL02dReIbRgQSCnID6tFVZMxssrKWlyWal&autoplay=1&mute=1&loop=1&controls=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&enablejsapi=1&disablekb=1&fs=0&showinfo=0"
       allow="autoplay; encrypted-media" allowfullscreen
     ></iframe>
   </div>
